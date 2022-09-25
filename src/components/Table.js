@@ -1,14 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import * as React from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/styles";
-import { useDemoData } from "@mui/x-data-grid-generator";
+// import { useDemoData } from "@mui/x-data-grid-generator";
 import { DataGrid } from "@mui/x-data-grid";
 import { TableContext } from "../providers/context/TableContext";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
-import Api from "../services/Api";
+// import Api from "../services/Api";
 import dataTable from "../dataTable";
+import { Table } from "antd";
 
 const useStyles = makeStyles({
     root: {
@@ -30,16 +31,7 @@ function CustomFooterStatusComponent(props) {
     const { state: tableState, dispatch: tableDispatch } =
         React.useContext(TableContext);
 
-    console.log("TABLE CONTEXT", tableState.table);
-
-    console.log("TABLE DATA MOCK", dataTable);
-
     React.useEffect(async () => {
-        let response = await Api.getOrders();
-        setTimeout(() => {
-            console.log("response", response);
-        }, 10000);
-
         tableDispatch({
             type: "getOrdersTable",
             orders: {
@@ -71,39 +63,53 @@ export { CustomFooterStatusComponent };
 
 export default function CustomFooter() {
     const [status, setStatus] = React.useState("connected");
-    const { data } = useDemoData({
-        dataSet: "Employee",
-        rowLength: 4,
-        maxColumns: 6
-    });
+    const [tableData, setTableData] = React.useState([])
 
-    console.log("DEMODATA", data);
+    const mockApiData = () => {
+        setTableData((curr) => curr = dataTable)
+
+        return tableData
+    }
+
+    // const { data } = useDemoData({
+    //     dataSet: "Employee",
+    //     rowLength: 4,
+    //     maxColumns: 9,
+    //     treeData: dataTable,
+    //     // visibleFields: ["order", "payment.amount", "currency"]
+    // });
+
+    const columns = [
+        { field: 'order', headerName: 'Order', width: 150 },
+        { field: 'payment.amount', headerName: 'Amount', width: 150 },
+        { field: 'payment.currency', headerName: 'Currency', width: 150 },
+        { field: 'terms', headerName: 'Terms', width: 150 },
+    ]
+
+    const rows = tableData
+
+    const toggleConnect = () => {
+        setStatus((current) =>
+            current === "connected" ? "disconnected" : "connected"
+        )
+    }
 
     return (
-        <div
-            style={{
-                width: "100%"
-            }}
-        >
+        <div style={{ width: "100%" }}>
             <div style={{ height: 350, width: "100%", marginBottom: 16 }}>
-                <DataGrid
-                    {...data}
-                    components={{
-                        Footer: CustomFooterStatusComponent
-                    }}
-                    componentsProps={{
-                        footer: { status }
-                    }}
-                />
+                {/* <DataGrid
+                    columns={columns}
+                    rows={rows}
+                    components={{ Footer: CustomFooterStatusComponent }}
+                    componentsProps={{ footer: { status } }}
+                /> */}
+
+                <Table dataSource={tableData} columns={columns} />
             </div>
             <Button
                 color="primary"
                 variant="contained"
-                onClick={() =>
-                    setStatus((current) =>
-                        current === "connected" ? "disconnected" : "connected"
-                    )
-                }
+                onClick={toggleConnect}
             >
                 {status === "connected" ? "Disconnect" : "Connect"}
             </Button>

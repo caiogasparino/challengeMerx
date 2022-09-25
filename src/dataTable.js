@@ -1,6 +1,6 @@
 const transactions = [
   {
-    id: '19fec058-f606-4960-92bd-a5eb8a20f09b',
+    id: 1,
     order: 676,
     payment: {
       amount: 95631.88,
@@ -18,7 +18,7 @@ const transactions = [
     terms: 0,
   },
   {
-    id: '4a69da3d-d8e6-461b-b73a-d1445ebed1de',
+    id: 2,
     order: 722,
     payment: {
       amount: 92492.92,
@@ -46,7 +46,7 @@ const transactions = [
     terms: 95,
   },
   {
-    id: 'cc3894bf-97c0-43ce-a9b9-e52bf8dbc7f6',
+    id: 3,
     order: 1500,
     payment: {
       amount: 91140.34,
@@ -64,7 +64,7 @@ const transactions = [
     terms: 0,
   },
   {
-    id: '399acfda-d528-4e78-a9de-72bc0066e78b',
+    id: 4,
     order: 1589,
     payment: {
       amount: 72144.74,
@@ -82,7 +82,7 @@ const transactions = [
     terms: 0,
   },
   {
-    id: 'a52e89e8-6ba5-4b32-870d-c8b033beabf2',
+    id: 5,
     order: 1330,
     payment: {
       amount: 70267.64,
