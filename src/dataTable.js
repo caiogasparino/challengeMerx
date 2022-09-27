@@ -6,7 +6,7 @@ const transactions = [
       amount: 95631.88,
       currency: 'USD',
       'currency-sign': '$',
-      'due-date': '2018-10-14',
+      duedate: '2018-10-14',
     },
     status: [
       {

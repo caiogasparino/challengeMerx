@@ -1,112 +1,277 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import * as React from "react";
-import PropTypes from "prop-types";
-import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/styles";
-import { useDemoData } from "@mui/x-data-grid-generator";
-import { DataGrid } from "@mui/x-data-grid";
-import { TableContext } from "../providers/context/TableContext";
-import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
-import Api from "../services/Api";
-import dataTable from "../dataTable";
+import React, { useMemo } from "react";
 
-const useStyles = makeStyles({
-    root: {
-        padding: 10,
-        display: "flex"
-    },
-    connected: {
-        marginRight: 2,
-        color: "#4caf50"
-    },
-    disconnected: {
-        marginRight: 2,
-        color: "#d9182e"
-    }
-});
+//MRT Imports
+import MaterialReactTable from "material-react-table";
 
-function CustomFooterStatusComponent(props) {
-    const classes = useStyles();
-    const { state: tableState, dispatch: tableDispatch } =
-        React.useContext(TableContext);
+//Material-UI Imports
+import {
+    Box,
+    Button,
+    ListItemIcon,
+    MenuItem,
+    Typography,
+    TextField
+} from "@mui/material";
 
-    console.log("TABLE CONTEXT", tableState.table);
+//Date Picker Imports
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-    console.log("TABLE DATA MOCK", dataTable);
+//Icons Imports
+import { AccountCircle, Send } from "@mui/icons-material";
 
-    React.useEffect(async () => {
-        let response = await Api.getOrders();
-        setTimeout(() => {
-            console.log("response", response);
-        }, 10000);
+//Mock Data
+import data from "../dataTable";
 
-        tableDispatch({
-            type: "getOrdersTable",
-            orders: {
-                status: ["Wrong Amount"],
-                invoice: 100,
-                balance: 250,
-                dueDate: 20220923,
-                bayondTerms: 100
+const Example = () => {
+    const columns = useMemo(
+        () => [
+            {
+                id: "transactions", //id used to define `group` column
+                header: "Transactions",
+                columns: [
+                    {
+                        accessorFn: (row) => `${row.order}`, //accessorFn used to join multiple data into a single cell
+                        id: "invoice", //id is still required when using accessorFn instead of accessorKey
+                        header: "INVOICE",
+                        size: 250,
+                        Cell: ({ cell, row }) => (
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "1rem"
+                                }}
+                            >
+                                <Typography>#{cell.getValue()}</Typography>
+                            </Box>
+                        )
+                    },
+                    {
+                        accessorFn: (row) => `${row.payment}`,
+                        id: "payment", //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
+                        enableClickToCopy: true,
+                        header: "BALANCE",
+                        size: 300,
+                        Cell: ({ cell, row }) => (
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "1rem"
+                                }}
+                            >
+                                <Typography>${cell.getValue()}</Typography>
+                            </Box>
+                        )
+                    }
+                ]
+            },
+            {
+                id: "id",
+                header: "Job Info",
+                columns: [
+                    {
+                        accessorKey: "salary",
+                        filterVariant: "range",
+                        header: "SALARY",
+                        size: 200,
+                        //custom conditional format and styling
+                        Cell: ({ cell }) => (
+                            <Box
+                                sx={(theme) => ({
+                                    backgroundColor:
+                                        cell.getValue() < 50_000
+                                            ? theme.palette.error.dark
+                                            : cell.getValue() >= 50_000 &&
+                                              cell.getValue() < 75_000
+                                            ? theme.palette.warning.dark
+                                            : theme.palette.success.dark,
+                                    borderRadius: "0.25rem",
+                                    color: "#fff",
+                                    maxWidth: "9ch",
+                                    p: "0.25rem"
+                                })}
+                            >
+                                {cell.getValue()?.toLocaleString?.("en-US", {
+                                    style: "currency",
+                                    currency: "USD",
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0
+                                })}
+                            </Box>
+                        )
+                    },
+                    {
+                        accessorKey: "jobTitle", //hey a simple column for once
+                        header: "Job Title",
+                        size: 350
+                    },
+
+                    {
+                        accessorFn: (row) => new Date(row.payment.amount), //convert to Date for sorting and filtering
+                        id: "due-date",
+                        header: "DUE DATE",
+                        filterFn: "lessThanOrEqualTo",
+                        sortingFn: "datetime",
+                        Cell: ({ cell }) =>
+                            cell.getValue()?.toLocaleDateString(), //render Date as a string
+                        Header: ({ column }) => (
+                            <em>{column.columnDef.header}</em>
+                        ), //custom header markup
+                        //Custom Date Picker Filter from @mui/x-date-pickers
+                        Filter: ({ column }) => (
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    onChange={(newValue) => {
+                                        column.setFilterValue(newValue);
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            helperText={
+                                                "Filter Mode: Lesss Than"
+                                            }
+                                            sx={{ minWidth: "120px" }}
+                                            variant="standard"
+                                        />
+                                    )}
+                                    value={column.getFilterValue()}
+                                />
+                            </LocalizationProvider>
+                        )
+                    }
+                ]
             }
-        });
-    }, [tableDispatch]);
+        ],
+        []
+    );
 
     return (
-        <div className={classes.root}>
-            <FiberManualRecordIcon
-                fontSize="small"
-                className={classes[props.status]}
-            />
-            Status {props.status}
-        </div>
-    );
-}
+        <MaterialReactTable
+            columns={columns}
+            data={data}
+            enableColumnFilterModes
+            enableColumnOrdering
+            enableGrouping
+            enablePinning
+            enableRowActions
+            enableRowSelection
+            initialState={{ showColumnFilters: true }}
+            positionToolbarAlertBanner="bottom"
+            renderDetailPanel={({ row }) => (
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-around",
+                        alignItems: "center"
+                    }}
+                >
+                    <img
+                        alt="avatar"
+                        height={200}
+                        src={row.original.avatar}
+                        loading="lazy"
+                        style={{ borderRadius: "50%" }}
+                    />
+                    <Box sx={{ textAlign: "center" }}>
+                        <Typography variant="h4">
+                            Signature Catch Phrase:
+                        </Typography>
+                        <Typography variant="h1">
+                            &quot;{row.original.signatureCatchPhrase}&quot;
+                        </Typography>
+                    </Box>
+                </Box>
+            )}
+            renderRowActionMenuItems={({ closeMenu }) => [
+                <MenuItem
+                    key={0}
+                    onClick={() => {
+                        // View profile logic...
+                        closeMenu();
+                    }}
+                    sx={{ m: 0 }}
+                >
+                    <ListItemIcon>
+                        <AccountCircle />
+                    </ListItemIcon>
+                    View Profile
+                </MenuItem>,
+                <MenuItem
+                    key={1}
+                    onClick={() => {
+                        // Send email logic...
+                        closeMenu();
+                    }}
+                    sx={{ m: 0 }}
+                >
+                    <ListItemIcon>
+                        <Send />
+                    </ListItemIcon>
+                    Send Email
+                </MenuItem>
+            ]}
+            renderTopToolbarCustomActions={({ table }) => {
+                const handleDeactivate = () => {
+                    table.getSelectedRowModel().flatRows.map((row) => {
+                        alert("deactivating " + row.getValue("name"));
+                    });
+                };
 
-CustomFooterStatusComponent.propTypes = {
-    status: PropTypes.oneOf(["connected", "disconnected"]).isRequired
+                const handleActivate = () => {
+                    table.getSelectedRowModel().flatRows.map((row) => {
+                        alert("activating " + row.getValue("name"));
+                    });
+                };
+
+                const handleContact = () => {
+                    table.getSelectedRowModel().flatRows.map((row) => {
+                        alert("contact " + row.getValue("name"));
+                    });
+                };
+
+                return (
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
+                        <Button
+                            color="error"
+                            disabled={
+                                table.getSelectedRowModel().flatRows.length ===
+                                0
+                            }
+                            onClick={handleDeactivate}
+                            variant="contained"
+                        >
+                            Deactivate
+                        </Button>
+                        <Button
+                            color="success"
+                            disabled={
+                                table.getSelectedRowModel().flatRows.length ===
+                                0
+                            }
+                            onClick={handleActivate}
+                            variant="contained"
+                        >
+                            Activate
+                        </Button>
+                        <Button
+                            color="info"
+                            disabled={
+                                table.getSelectedRowModel().flatRows.length ===
+                                0
+                            }
+                            onClick={handleContact}
+                            variant="contained"
+                        >
+                            Contact
+                        </Button>
+                    </div>
+                );
+            }}
+        />
+    );
 };
 
-export { CustomFooterStatusComponent };
-
-export default function CustomFooter() {
-    const [status, setStatus] = React.useState("connected");
-    const { data } = useDemoData({
-        dataSet: "Employee",
-        rowLength: 4,
-        maxColumns: 6
-    });
-
-    console.log("DEMODATA", data);
-
-    return (
-        <div
-            style={{
-                width: "100%"
-            }}
-        >
-            <div style={{ height: 350, width: "100%", marginBottom: 16 }}>
-                <DataGrid
-                    {...data}
-                    components={{
-                        Footer: CustomFooterStatusComponent
-                    }}
-                    componentsProps={{
-                        footer: { status }
-                    }}
-                />
-            </div>
-            <Button
-                color="primary"
-                variant="contained"
-                onClick={() =>
-                    setStatus((current) =>
-                        current === "connected" ? "disconnected" : "connected"
-                    )
-                }
-            >
-                {status === "connected" ? "Disconnect" : "Connect"}
-            </Button>
-        </div>
-    );
-}
+export default Example;
