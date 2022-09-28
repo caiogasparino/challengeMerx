@@ -1,4 +1,4 @@
-# chalengeMerx
+# challengeMerx
 Challenge for company Merx
 
 
