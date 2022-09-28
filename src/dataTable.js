@@ -6,7 +6,7 @@ const transactions = [
       amount: 95631.88,
       currency: 'USD',
       'currency-sign': '$',
-      duedate: '2018-10-14',
+      'due-date': '2018-10-14',
     },
     status: [
       {
@@ -32,16 +32,6 @@ const transactions = [
         date: '2018-06-05',
         description: 'Create a order',
       },
-      {
-        code: 'PYR',
-        date: '2018-06-07',
-        description: 'Payment Request',
-      },
-      {
-        code: 'WRA',
-        date: '2018-06-09',
-        description: 'Wrong Amount',
-      },
     ],
     terms: 95,
   },
@@ -56,9 +46,14 @@ const transactions = [
     },
     status: [
       {
-        code: 'CRO',
-        date: '2018-06-05',
-        description: 'Create a order',
+        code: 'PYR',
+        date: '2018-06-07',
+        description: 'Payment Request',
+      },
+      {
+        code: 'WRA',
+        date: '2018-06-09',
+        description: 'Wrong Amount',
       },
     ],
     terms: 0,
@@ -74,9 +69,9 @@ const transactions = [
     },
     status: [
       {
-        code: 'CRO',
-        date: '2018-06-05',
-        description: 'Create a order',
+        code: 'WRA',
+        date: '2018-06-09',
+        description: 'Wrong Amount',
       },
     ],
     terms: 0,
@@ -91,16 +86,6 @@ const transactions = [
       'due-date': '2018-09-01',
     },
     status: [
-      {
-        code: 'CRO',
-        date: '2018-06-05',
-        description: 'Create a order',
-      },
-      {
-        code: 'PYR',
-        date: '2018-06-07',
-        description: 'Payment Request',
-      },
       {
         code: 'PYA',
         date: '2018-06-23',
@@ -120,21 +105,6 @@ const transactions = [
     },
     status: [
       {
-        code: 'CRO',
-        date: '2018-06-05',
-        description: 'Create a order',
-      },
-      {
-        code: 'PYR',
-        date: '2018-06-07',
-        description: 'Payment Request',
-      },
-      {
-        code: 'PYA',
-        date: '2018-06-23',
-        description: 'Payment Approved',
-      },
-      {
         code: 'NFE',
         date: '2018-06-24',
         description: 'Electronic Invoice Sent',
@@ -152,11 +122,6 @@ const transactions = [
       'due-date': '2018-10-07',
     },
     status: [
-      {
-        code: 'CRO',
-        date: '2018-06-05',
-        description: 'Create a order',
-      },
       {
         code: 'PYR',
         date: '2018-06-07',
@@ -180,21 +145,6 @@ const transactions = [
       'due-date': '2018-10-25',
     },
     status: [
-      {
-        code: 'CRO',
-        date: '2018-06-05',
-        description: 'Create a order',
-      },
-      {
-        code: 'PYR',
-        date: '2018-06-07',
-        description: 'Payment Request',
-      },
-      {
-        code: 'PYA',
-        date: '2018-06-23',
-        description: 'Payment Approved',
-      },
       {
         code: 'NFE',
         date: '2018-06-24',
