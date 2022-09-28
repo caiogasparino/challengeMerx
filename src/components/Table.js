@@ -6,6 +6,9 @@ import MaterialReactTable from "material-react-table";
 //Material-UI Imports
 import { Box, MenuItem, Typography, TextField } from "@mui/material";
 
+//Import Material React Table Translations
+import { MRT_Localization_PT_BR } from "material-react-table/locales/pt-BR";
+
 //Date Picker Imports
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -194,21 +197,21 @@ const DataTable = () => {
         <MaterialReactTable
             columns={columns}
             data={data}
-            displayColumnDefOptions
-            enableColumnOrdering
-            enableRowActions
+            displayColumnDefOptions={true}
+            enableColumnActions={false}
+            enableRowActions={true}
+            localization={
+                (MRT_Localization_PT_BR,
+                {
+                    actions: ""
+                })
+            }
+            positionActionsColumn="last"
             initialState={{ showColumnFilters: false }}
             positionToolbarAlertBanner="bottom"
-            renderRowActionMenuItems={({ closeMenu }) => [
-                <MenuItem
-                    key={0}
-                    onClick={() => {
-                        // View profile logic...
-                        closeMenu();
-                    }}
-                    sx={{ m: 0 }}
-                >
-                    RENDER MODAL DETAILS
+            renderRowActionMenuItems={({ row, index }) => [
+                <MenuItem onClick={() => console.info("Visualizar detalhes")}>
+                    Visualizar detalhes
                 </MenuItem>
             ]}
         />
