@@ -28,11 +28,11 @@ const Example = () => {
     const columns = useMemo(
         () => [
             {
-                id: "transactions", //id used to define `group` column
-                header: "Transactions",
+                id: "status", //id used to define `group` column
+                header: "Status",
                 columns: [
                     {
-                        accessorFn: (row) => `${row.order}`, //accessorFn used to join multiple data into a single cell
+                        accessorFn: (row) => `${row.status}`, //accessorFn used to join multiple data into a single cell
                         id: "invoice", //id is still required when using accessorFn instead of accessorKey
                         header: "INVOICE",
                         size: 250,
@@ -44,12 +44,22 @@ const Example = () => {
                                     gap: "1rem"
                                 }}
                             >
-                                <Typography>#{cell.getValue()}</Typography>
+                                <Typography>
+                                    {row.original.status.length > 1
+                                        ? row.original.status[1].description
+                                        : row.original.status[0].description}
+                                </Typography>
                             </Box>
                         )
-                    },
+                    }
+                ]
+            },
+            {
+                id: "payment", //id used to define `group` column
+                header: "Payment",
+                columns: [
                     {
-                        accessorFn: (row) => `${row.payment}`,
+                        accessorFn: (row) => `${row.payment.amount}`,
                         id: "payment", //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
                         enableClickToCopy: true,
                         header: "BALANCE",
@@ -59,7 +69,11 @@ const Example = () => {
                                 sx={{
                                     display: "flex",
                                     alignItems: "center",
-                                    gap: "1rem"
+                                    gap: "1rem",
+                                    backgroundColor:
+                                        cell.getValue() > 90000
+                                            ? "gold"
+                                            : "crimson"
                                 }}
                             >
                                 <Typography>${cell.getValue()}</Typography>
@@ -70,47 +84,10 @@ const Example = () => {
             },
             {
                 id: "id",
-                header: "Job Info",
+                header: "Due Date",
                 columns: [
                     {
-                        accessorKey: "salary",
-                        filterVariant: "range",
-                        header: "SALARY",
-                        size: 200,
-                        //custom conditional format and styling
-                        Cell: ({ cell }) => (
-                            <Box
-                                sx={(theme) => ({
-                                    backgroundColor:
-                                        cell.getValue() < 50_000
-                                            ? theme.palette.error.dark
-                                            : cell.getValue() >= 50_000 &&
-                                              cell.getValue() < 75_000
-                                            ? theme.palette.warning.dark
-                                            : theme.palette.success.dark,
-                                    borderRadius: "0.25rem",
-                                    color: "#fff",
-                                    maxWidth: "9ch",
-                                    p: "0.25rem"
-                                })}
-                            >
-                                {cell.getValue()?.toLocaleString?.("en-US", {
-                                    style: "currency",
-                                    currency: "USD",
-                                    minimumFractionDigits: 0,
-                                    maximumFractionDigits: 0
-                                })}
-                            </Box>
-                        )
-                    },
-                    {
-                        accessorKey: "jobTitle", //hey a simple column for once
-                        header: "Job Title",
-                        size: 350
-                    },
-
-                    {
-                        accessorFn: (row) => new Date(row.payment.amount), //convert to Date for sorting and filtering
+                        // accessorFn: (row) => new Date(row.payment.amount), //convert to Date for sorting and filtering
                         id: "due-date",
                         header: "DUE DATE",
                         filterFn: "lessThanOrEqualTo",
