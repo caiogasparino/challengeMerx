@@ -20,7 +20,7 @@ export default {
     fetch(url, fetchData)
       .then((response) => response.json()) // passo extra
       .then((data) => {
-        console.log('TA NA MAO', data)
+        console.log('getOrders', data)
       })
       .catch((error) => console.error('NAO DEU BOA', error))
   },
