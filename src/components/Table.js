@@ -129,16 +129,58 @@ const DataTable = () => {
                         id: "terms", //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
                         enableClickToCopy: true,
                         header: "BEYOND TERMS",
-                        size: 50,
+                        size: 80,
                         Cell: ({ cell, row }) => (
                             <Box
-                                sx={{
+                                sx={(theme) => ({
                                     display: "flex",
-                                    alignItems: "center",
-                                    gap: "1rem"
-                                }}
+                                    justifyContent: "center",
+                                    gap: "1rem",
+                                    backgroundColor:
+                                        (cell.getValue() === "0" &&
+                                            "#e6f9e7") ||
+                                        (cell.getValue() === "1" &&
+                                            "#fff5e6") ||
+                                        (cell.getValue() <= "13" &&
+                                            "#fff5e6") ||
+                                        (cell.getValue() > "73" &&
+                                            cell.getValue() <= "95" &&
+                                            "#f4eaf8") ||
+                                        (cell.getValue() > "13" &&
+                                            cell.getValue() <= "34" &&
+                                            "#ffe9e3") ||
+                                        (cell.getValue() > "34" &&
+                                            cell.getValue() <= "73" &&
+                                            "#ffe3e2"),
+                                    borderRadius: "1rem",
+                                    color:
+                                        (cell.getValue() === "0" &&
+                                            "#13b43c") ||
+                                        (cell.getValue() <= "13" &&
+                                            "#de9125") ||
+                                        (cell.getValue() > "13" &&
+                                            cell.getValue() <= "34" &&
+                                            "#ff693e") ||
+                                        (cell.getValue() > "73" &&
+                                            cell.getValue() <= "95" &&
+                                            "#ac71cf") ||
+                                        (cell.getValue() > "34" &&
+                                            cell.getValue() <= "73" &&
+                                            "#f92223"),
+                                    maxWidth: "40ch",
+                                    width: "100px",
+                                    p: ".20rem"
+                                })}
                             >
-                                <Typography>{cell.getValue()}</Typography>
+                                <Typography>
+                                    {(cell.getValue() === "0" && "Current") ||
+                                        (cell.getValue() === "1" &&
+                                            cell.getValue() + " day late") ||
+                                        (cell.getValue() <= "13" &&
+                                            cell.getValue() + " days late") ||
+                                        (cell.getValue() >= "13" &&
+                                            cell.getValue() + " days late")}
+                                </Typography>
                             </Box>
                         )
                     }
