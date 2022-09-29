@@ -4,13 +4,15 @@ export const initialState = {
   balance: 0,
   dueDate: 0,
   bayondTerms: 0,
-}
+};
 
 export const TableReducer = (state, action) => {
   switch (action.type) {
-    case 'getOrdersTable':
-      return { ...state, table: action }
+    case "getOrdersTable":
+      return { ...state, table: action };
+    case "setOrder":
+      return { ...state, ...action.order };
     default:
-      return state
+      return state;
   }
-}
+};

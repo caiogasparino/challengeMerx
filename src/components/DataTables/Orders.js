@@ -1,30 +1,28 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useContext } from "react";
+import { TableContext as OrderContext } from "../../providers/context/TableContext";
+import { useNavigate } from "react-router-dom";
 
 //MRT Imports
 import MaterialReactTable from "material-react-table";
 
 //Material-UI Imports
-import {
-    Box,
-    Button,
-    ListItemIcon,
-    MenuItem,
-    Typography,
-    TextField
-} from "@mui/material";
+import { Box, MenuItem, Typography, TextField } from "@mui/material";
+
+//Import Material React Table Translations
+import { MRT_Localization_PT_BR } from "material-react-table/locales/pt-BR";
 
 //Date Picker Imports
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-//Icons Imports
-import { AccountCircle, Send } from "@mui/icons-material";
-
 //Mock Data
-import data from "../dataTable";
+import data from "../../dataTable";
 
-const Example = () => {
+const DataTableOrders = () => {
+    const navigation = useNavigate();
+    const { dispatch: orderDispatch } = useContext(OrderContext);
+
     const columns = useMemo(
         () => [
             {
@@ -68,7 +66,7 @@ const Example = () => {
                         accessorFn: (row) => `${row.order}`, //accessorFn used to join multiple data into a single cell
                         id: "invoice", //id is still required when using accessorFn instead of accessorKey
                         header: "INVOICE",
-                        size: 250,
+                        size: 100,
                         Cell: ({ cell, row }) => (
                             <Box
                                 sx={{
@@ -91,7 +89,7 @@ const Example = () => {
                         id: "payment", //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
                         enableClickToCopy: true,
                         header: "BALANCE",
-                        size: 300,
+                        size: 100,
                         Cell: ({ cell, row }) => (
                             <Box
                                 sx={{
@@ -100,18 +98,15 @@ const Example = () => {
                                     gap: "1rem"
                                 }}
                             >
-                                <Typography>${cell.getValue()}</Typography>
+                                <Typography sx={{ fontWeight: 600 }}>
+                                    ${cell.getValue()}
+                                </Typography>
                             </Box>
                         )
-                    }
-                ]
-            },
-            {
-                id: "id",
-                header: "Due Date",
-                columns: [
+                    },
                     {
-                        // accessorFn: (row) => new Date(row.payment.amount), //convert to Date for sorting and filtering
+                        accessorFn: (row) =>
+                            new Date(`${row.payment["due-date"]}`), //convert to Date for sorting and filtering
                         id: "due-date",
                         header: "DUE DATE",
                         filterFn: "lessThanOrEqualTo",
@@ -142,6 +137,66 @@ const Example = () => {
                                 />
                             </LocalizationProvider>
                         )
+                    },
+                    {
+                        accessorFn: (row) => `${row.terms}`,
+                        id: "terms", //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
+                        enableClickToCopy: true,
+                        header: "BEYOND TERMS",
+                        size: 80,
+                        Cell: ({ cell, row }) => (
+                            <Box
+                                sx={(theme) => ({
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    gap: "1rem",
+                                    backgroundColor:
+                                        (cell.getValue() === "0" &&
+                                            "#e6f9e7") ||
+                                        (cell.getValue() === "1" &&
+                                            "#fff5e6") ||
+                                        (cell.getValue() <= "13" &&
+                                            "#fff5e6") ||
+                                        (cell.getValue() > "73" &&
+                                            cell.getValue() <= "95" &&
+                                            "#f4eaf8") ||
+                                        (cell.getValue() > "13" &&
+                                            cell.getValue() <= "34" &&
+                                            "#ffe9e3") ||
+                                        (cell.getValue() > "34" &&
+                                            cell.getValue() <= "73" &&
+                                            "#ffe3e2"),
+                                    borderRadius: "1rem",
+                                    color:
+                                        (cell.getValue() === "0" &&
+                                            "#13b43c") ||
+                                        (cell.getValue() <= "13" &&
+                                            "#de9125") ||
+                                        (cell.getValue() > "13" &&
+                                            cell.getValue() <= "34" &&
+                                            "#ff693e") ||
+                                        (cell.getValue() > "73" &&
+                                            cell.getValue() <= "95" &&
+                                            "#ac71cf") ||
+                                        (cell.getValue() > "34" &&
+                                            cell.getValue() <= "73" &&
+                                            "#f92223"),
+                                    maxWidth: "40ch",
+                                    width: "100px",
+                                    p: ".20rem"
+                                })}
+                            >
+                                <Typography>
+                                    {(cell.getValue() === "0" && "Current") ||
+                                        (cell.getValue() === "1" &&
+                                            cell.getValue() + " day late") ||
+                                        (cell.getValue() <= "13" &&
+                                            cell.getValue() + " days late") ||
+                                        (cell.getValue() >= "13" &&
+                                            cell.getValue() + " days late")}
+                                </Typography>
+                            </Box>
+                        )
                     }
                 ]
             }
@@ -149,130 +204,44 @@ const Example = () => {
         []
     );
 
+    const handleClickOrderDetails = async (order) => {
+        console.log("clicou em ...", order);
+
+        localStorage.setItem("selectedOrder", JSON.stringify(order));
+
+        // gravar no context
+        orderDispatch({
+            type: "setOrder",
+            order: order
+        });
+
+        navigation("/details");
+    };
+
     return (
         <MaterialReactTable
             columns={columns}
             data={data}
-            enableColumnFilterModes
-            enableColumnOrdering
-            enableGrouping
-            enablePinning
-            enableRowActions
-            enableRowSelection
-            initialState={{ showColumnFilters: true }}
+            displayColumnDefOptions={true}
+            enableColumnActions={false}
+            enableRowActions={true}
+            localization={
+                (MRT_Localization_PT_BR,
+                {
+                    actions: ""
+                })
+            }
+            positionActionsColumn="last"
+            initialState={{ showColumnFilters: false }}
             positionToolbarAlertBanner="bottom"
-            renderDetailPanel={({ row }) => (
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-around",
-                        alignItems: "center"
-                    }}
-                >
-                    <img
-                        alt="avatar"
-                        height={200}
-                        src={row.original.avatar}
-                        loading="lazy"
-                        style={{ borderRadius: "50%" }}
-                    />
-                    <Box sx={{ textAlign: "center" }}>
-                        <Typography variant="h4">
-                            Signature Catch Phrase:
-                        </Typography>
-                        <Typography variant="h1">
-                            &quot;{row.original.signatureCatchPhrase}&quot;
-                        </Typography>
-                    </Box>
-                </Box>
-            )}
-            renderRowActionMenuItems={({ closeMenu }) => [
-                <MenuItem
-                    key={0}
-                    onClick={() => {
-                        // View profile logic...
-                        closeMenu();
-                    }}
-                    sx={{ m: 0 }}
-                >
-                    <ListItemIcon>
-                        <AccountCircle />
-                    </ListItemIcon>
-                    View Profile
-                </MenuItem>,
-                <MenuItem
-                    key={1}
-                    onClick={() => {
-                        // Send email logic...
-                        closeMenu();
-                    }}
-                    sx={{ m: 0 }}
-                >
-                    <ListItemIcon>
-                        <Send />
-                    </ListItemIcon>
-                    Send Email
+            renderRowActionMenuItems={({ row, index }) => [
+                // <MenuItem onClick={() => console.info("Visualizar detalhes")}>
+                <MenuItem onClick={() => handleClickOrderDetails(row.original)}>
+                    Visualizar detalhes
                 </MenuItem>
             ]}
-            renderTopToolbarCustomActions={({ table }) => {
-                const handleDeactivate = () => {
-                    table.getSelectedRowModel().flatRows.map((row) => {
-                        alert("deactivating " + row.getValue("name"));
-                    });
-                };
-
-                const handleActivate = () => {
-                    table.getSelectedRowModel().flatRows.map((row) => {
-                        alert("activating " + row.getValue("name"));
-                    });
-                };
-
-                const handleContact = () => {
-                    table.getSelectedRowModel().flatRows.map((row) => {
-                        alert("contact " + row.getValue("name"));
-                    });
-                };
-
-                return (
-                    <div style={{ display: "flex", gap: "0.5rem" }}>
-                        <Button
-                            color="error"
-                            disabled={
-                                table.getSelectedRowModel().flatRows.length ===
-                                0
-                            }
-                            onClick={handleDeactivate}
-                            variant="contained"
-                        >
-                            Deactivate
-                        </Button>
-                        <Button
-                            color="success"
-                            disabled={
-                                table.getSelectedRowModel().flatRows.length ===
-                                0
-                            }
-                            onClick={handleActivate}
-                            variant="contained"
-                        >
-                            Activate
-                        </Button>
-                        <Button
-                            color="info"
-                            disabled={
-                                table.getSelectedRowModel().flatRows.length ===
-                                0
-                            }
-                            onClick={handleContact}
-                            variant="contained"
-                        >
-                            Contact
-                        </Button>
-                    </div>
-                );
-            }}
         />
     );
 };
 
-export default Example;
+export default DataTableOrders;
