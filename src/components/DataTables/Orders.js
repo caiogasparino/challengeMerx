@@ -1,5 +1,4 @@
-import React, { useMemo, useContext } from "react";
-import { TableContext as OrderContext } from "../../providers/context/TableContext";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 //MRT Imports
@@ -19,9 +18,12 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 //Mock Data
 import data from "../../dataTable";
 
+const styles = {
+    cell: { display: "flex", alignItems: "center", gap: "1rem" }
+};
+
 const DataTableOrders = () => {
     const navigation = useNavigate();
-    const { dispatch: orderDispatch } = useContext(OrderContext);
 
     const columns = useMemo(
         () => [
@@ -68,13 +70,7 @@ const DataTableOrders = () => {
                         header: "INVOICE",
                         size: 100,
                         Cell: ({ cell, row }) => (
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "1rem"
-                                }}
-                            >
+                            <Box sx={styles.cell}>
                                 <Typography>#{cell.getValue()}</Typography>
                             </Box>
                         )
@@ -91,13 +87,7 @@ const DataTableOrders = () => {
                         header: "BALANCE",
                         size: 100,
                         Cell: ({ cell, row }) => (
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "1rem"
-                                }}
-                            >
+                            <Box sx={styles.cell}>
                                 <Typography sx={{ fontWeight: 600 }}>
                                     ${cell.getValue()}
                                 </Typography>
@@ -205,15 +195,7 @@ const DataTableOrders = () => {
     );
 
     const handleClickOrderDetails = async (order) => {
-        console.log("clicou em ...", order);
-
         localStorage.setItem("selectedOrder", JSON.stringify(order));
-
-        // gravar no context
-        orderDispatch({
-            type: "setOrder",
-            order: order
-        });
 
         navigation("/details");
     };

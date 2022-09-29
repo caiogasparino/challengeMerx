@@ -14,11 +14,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-export const DataTableDetails = () => {
-    const selectedOrderTemp = JSON.parse(localStorage.getItem("selectedOrder"));
-    let selectedOrder = [];
-    selectedOrder[0] = selectedOrderTemp;
+const styles = {
+    cell: { display: "flex", alignItems: "center", gap: "1rem" }
+};
 
+export const DataTableDetails = ({ selectedOrder }) => {
     const columns = useMemo(
         () => [
             {
@@ -30,13 +30,7 @@ export const DataTableDetails = () => {
                         header: "INVOICE",
                         size: 100,
                         Cell: ({ cell, row }) => (
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "1rem"
-                                }}
-                            >
+                            <Box sx={styles.cell}>
                                 <Typography>#{cell.getValue()}</Typography>
                             </Box>
                         )
@@ -53,13 +47,7 @@ export const DataTableDetails = () => {
                         header: "BALANCE",
                         size: 100,
                         Cell: ({ cell, row }) => (
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "1rem"
-                                }}
-                            >
+                            <Box sx={styles.cell}>
                                 <Typography sx={{ fontWeight: 600 }}>
                                     ${cell.getValue()}
                                 </Typography>
@@ -101,14 +89,14 @@ export const DataTableDetails = () => {
                         )
                     },
                     {
-                        accessorFn: (row) => `${row.order}`,
+                        accessorFn: (row) => `${row.terms}`,
                         id: "terms", //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
                         enableClickToCopy: true,
                         header: "BEYOND TERMS",
                         size: 80,
                         Cell: ({ cell, row }) => (
                             <Box
-                                sx={(theme) => ({
+                                sx={() => ({
                                     display: "flex",
                                     justifyContent: "center",
                                     gap: "1rem",
