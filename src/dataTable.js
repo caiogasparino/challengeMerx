@@ -55,6 +55,16 @@ const transactions = [
         date: '2018-06-09',
         description: 'Wrong Amount',
       },
+      {
+        code: 'PYA',
+        date: '2018-06-23',
+        description: 'Payment Approved',
+      },
+      {
+        code: 'DYA',
+        date: '2018-07-02',
+        description: 'Delivery Attempt',
+      },
     ],
     terms: 0,
   },

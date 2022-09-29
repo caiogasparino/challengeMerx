@@ -3,10 +3,12 @@ import DataTableDetails from "./DataTables/Details";
 import Timeline from "./Timeline";
 
 //Material-UI Imports
-import { Box, Typography } from "@mui/material";
+import { Container, Box, Typography } from "@mui/material";
 
 const styles = {
-    mainTitle: { color: "#777", textAlign: "left" }
+    constainer: { padding: "5%" },
+    mainTitle: { paddingBottom: "1%", color: "#777", textAlign: "left" },
+    status: { justifyContent: "flex-start" }
 };
 
 const OrdersDetails = () => {
@@ -17,15 +19,15 @@ const OrdersDetails = () => {
     status = selectedOrder[0].status;
 
     return (
-        <>
-            <Typography variant="h3" sx={styles.mainTitle}>
+        <Container sx={styles.constainer}>
+            <Typography variant="h4" sx={styles.mainTitle}>
                 Order Details
             </Typography>
             <DataTableDetails selectedOrder={selectedOrder} />
-            <Box sx={styles.timelineBox}>
+            <Box sx={{ marginLeft: -120 }}>
                 <Timeline status={status} />
             </Box>
-        </>
+        </Container>
     );
 };
 

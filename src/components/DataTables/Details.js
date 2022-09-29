@@ -94,7 +94,7 @@ export const DataTableDetails = ({ selectedOrder }) => {
                         enableClickToCopy: true,
                         header: "BEYOND TERMS",
                         size: 80,
-                        Cell: ({ cell, row }) => (
+                        Cell: ({ cell }) => (
                             <Box
                                 sx={() => ({
                                     display: "flex",

@@ -3,16 +3,20 @@ import React from "react";
 import DataTableOrders from "./DataTables/Orders";
 
 //Material-UI Imports
-import { Typography } from "@mui/material";
+import { Container, Typography } from "@mui/material";
+
+const styles = {
+    mainTitle: { paddingBottom: "1%", color: "#777", textAlign: "left" }
+};
 
 const OrdersScreen = () => {
     return (
-        <>
-            <Typography variant="h3" sx={{ color: "#777", textAlign: "left" }}>
+        <Container sx={{ padding: "5%" }}>
+            <Typography variant="h4" sx={styles.mainTitle}>
                 Orders
             </Typography>
             <DataTableOrders />
-        </>
+        </Container>
     );
 };
 

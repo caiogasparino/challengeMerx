@@ -23,6 +23,7 @@ const styles = {
         alignItems: "flex-end"
     },
     timelineConnector: { width: 3, backgroundColor: "#999" },
+    timelineConnectorCurrent: { width: 3, backgroundColor: "#ef233c" },
     statusDescription: { marginLeft: 2, fontSize: 20, color: "#444" },
     statusDate: { marginLeft: 2, fontSize: 17, color: "#888" }
 };
@@ -33,6 +34,20 @@ const TimelineStatus = ({ status }) => {
             {status.map((item, index) => (
                 <TimelineItem key={index}>
                     <TimelineSeparator>
+                        {status.length <= 1 && (
+                            <TimelineConnector
+                                sx={styles.timelineConnectorCurrent}
+                            />
+                        )}
+
+                        {index < status.length - 1 ? (
+                            <TimelineConnector sx={styles.timelineConnector} />
+                        ) : (
+                            <TimelineConnector
+                                sx={styles.timelineConnectorCurrent}
+                            />
+                        )}
+
                         <TimelineDot
                             sx={{
                                 borderColor:
@@ -44,7 +59,7 @@ const TimelineStatus = ({ status }) => {
                             }}
                             variant="outlined"
                         />
-                        {index < status.length - 1 && (
+                        {index < status.length - 2 && (
                             <TimelineConnector sx={styles.timelineConnector} />
                         )}
                     </TimelineSeparator>
