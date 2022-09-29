@@ -1,11 +1,10 @@
-import React, { useMemo, useContext, useEffect } from "react";
-import { TableContext as OrderContext } from "../../providers/context/TableContext";
+import React, { useMemo } from "react";
 
 //MRT Imports
 import MaterialReactTable from "material-react-table";
 
 //Material-UI Imports
-import { Box, MenuItem, Typography, TextField, Link } from "@mui/material";
+import { Box, Typography, TextField } from "@mui/material";
 
 //Import Material React Table Translations
 import { MRT_Localization_PT_BR } from "material-react-table/locales/pt-BR";
@@ -15,13 +14,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-export const DataTableDetails = () => {
-    const selectedOrderTemp = JSON.parse(localStorage.getItem("selectedOrder"));
-    let selectedOrder = [];
-    selectedOrder[0] = selectedOrderTemp;
+const styles = {
+    cell: { display: "flex", alignItems: "center", gap: "1rem" }
+};
 
-    console.log("selectedOrder = ", selectedOrder);
-
+export const DataTableDetails = ({ selectedOrder }) => {
     const columns = useMemo(
         () => [
             {
@@ -67,13 +64,7 @@ export const DataTableDetails = () => {
                         header: "INVOICE",
                         size: 100,
                         Cell: ({ cell, row }) => (
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "1rem"
-                                }}
-                            >
+                            <Box sx={styles.cell}>
                                 <Typography>{cell.getValue()}</Typography>
                             </Box>
                         )
@@ -90,13 +81,7 @@ export const DataTableDetails = () => {
                         header: "BALANCE",
                         size: 100,
                         Cell: ({ cell, row }) => (
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "1rem"
-                                }}
-                            >
+                            <Box sx={styles.cell}>
                                 <Typography sx={{ fontWeight: 600 }}>
                                     ${cell.getValue()}
                                 </Typography>
@@ -138,7 +123,7 @@ export const DataTableDetails = () => {
                         )
                     },
                     {
-                        accessorFn: (row) => `${row.order}`,
+                        accessorFn: (row) => `${row.terms}`,
                         id: "terms", //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
                         enableClickToCopy: true,
                         header: "BEYOND TERMS",

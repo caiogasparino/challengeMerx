@@ -1,17 +1,30 @@
-import React from "react";
-
-import DataTable from "./DataTables/Details";
+import * as React from "react";
+import DataTableDetails from "./DataTables/Details";
+import Timeline from "./Timeline";
 
 //Material-UI Imports
-import { Box, MenuItem, Typography, TextField } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+
+const styles = {
+    mainTitle: { color: "#777", textAlign: "left" }
+};
 
 const OrdersDetails = () => {
+    let selectedOrder = [];
+    let status = [];
+
+    selectedOrder[0] = JSON.parse(localStorage.getItem("selectedOrder"));
+    status = selectedOrder[0].status;
+
     return (
         <>
-            <Typography variant="h3" sx={{ color: "#777", textAlign: "left" }}>
+            <Typography variant="h3" sx={styles.mainTitle}>
                 Order Details
             </Typography>
-            <DataTable />
+            <DataTableDetails selectedOrder={selectedOrder} />
+            <Box sx={styles.timelineBox}>
+                <Timeline status={status} />
+            </Box>
         </>
     );
 };

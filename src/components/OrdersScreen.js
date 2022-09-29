@@ -1,9 +1,9 @@
 import React from "react";
 
-import DataTable from "./DataTables/Orders";
+import DataTableOrders from "./DataTables/Orders";
 
 //Material-UI Imports
-import { Box, MenuItem, Typography, TextField, Link } from "@mui/material";
+import { Typography } from "@mui/material";
 
 const OrdersScreen = () => {
     return (
@@ -11,7 +11,7 @@ const OrdersScreen = () => {
             <Typography variant="h3" sx={{ color: "#777", textAlign: "left" }}>
                 Orders
             </Typography>
-            <DataTable />
+            <DataTableOrders />
         </>
     );
 };
