@@ -161,6 +161,7 @@ export const DataTableDetails = ({ selectedOrder }) => {
             displayColumnDefOptions={true}
             enableColumnActions={false}
             enableRowActions={true}
+            enablePagination={false}
             localization={
                 (MRT_Localization_PT_BR,
                 {

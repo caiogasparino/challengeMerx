@@ -6,12 +6,13 @@ import DataTableOrders from "./DataTables/Orders";
 import { Container, Typography } from "@mui/material";
 
 const styles = {
-    mainTitle: { paddingBottom: "1%", color: "#777", textAlign: "left" }
+    mainTitle: { paddingBottom: "1%", color: "#777", textAlign: "left" },
+    containerTitle: { padding: "8%" }
 };
 
 const OrdersScreen = () => {
     return (
-        <Container sx={{ padding: "5%" }}>
+        <Container sx={styles.containerTitle}>
             <Typography variant="h4" sx={styles.mainTitle}>
                 Orders
             </Typography>
